@@ -18,7 +18,7 @@ def add(x, y):
     return x + y
 
 def readFile():
-    tweets = open('~/data/0c7526e6-ce8c-4e59-884c-5a15bbca5eb3','r')
+    tweets = open('0c7526e6-ce8c-4e59-884c-5a15bbca5eb3','r')
     tweets = tweets.read()
     tweets = tweets.split('\n\n')
     tweet_list = []
