@@ -2,7 +2,6 @@ from flask import Flask
 from celery import Celery
 import os
 import json
-#import utf-8
 
 app = Flask(__name__)
 app.config['CELERY_BROKER_URL'] ='pyamqp://'
@@ -47,8 +46,8 @@ def countPronoun():
            dic["denne"] += 1
 	if "denna" in i:
            dic["denna"] += 1
-    a="hej"
-    return a
+    json_pronoun = json.dumps(dic)
+    return json_pronoun
 
 
 @app.route('/countpronouns', methods=['GET'])
