@@ -1,22 +1,17 @@
+from flask import Flask
 from celery import Celery
 import os
 import json
 #import utf-8
-app = Celery('tasks', backend='rpc://', broker='pyamqp://')
-app.conf.task_serializer = 'json'
-app.conf.update(
-    task_serializer='json',
-    accept_content=['json'],  # Ignore other content
-    result_serializer='json',
-    timezone='Europe/Oslo',
-    enable_utc=True,
-)
-app.config_from_object('celeryconfig')
 
-@app.task
-def add(x, y):
-    return x + y
+app = Flask(__name__)
+app.config['CELERY_BROKER_URL'] ='pyamqp://'
+app.config['CELERY_RESULT_BACKEND'] ='rpc://'
 
+celery = Celery(app.name, broker=app.config['CELERY_BROKER_URL'])
+celery.conf.update(app.config)
+
+@celery.task
 def readFile():
     tweets = open('0c7526e6-ce8c-4e59-884c-5a15bbca5eb3','r')
     tweets = tweets.read()
@@ -52,23 +47,13 @@ def countPronoun():
            dic["denne"] += 1
 	if "denna" in i:
            dic["denna"] += 1
-    return dic
+    a="hej"
+    return a
 
 
-def createFile():
-    data = {}
-    data['hon'] = []
-    data['han'] = []
-    data['hen'] = []
-    data['hon'].append({
-    'count':'1'
-	})
-    data['han'].append({
-    'count':'2'
-	})
-    data['hen'].append({
-    'count':'3'
-        })
-    with open('counter.txt', 'w') as outfile:
-       json.dump(data,outfile)
-    return(data)
+@app.route('/countpronouns', methods=['GET'])
+def main():
+    return countPronoun()
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0',debug=True)
