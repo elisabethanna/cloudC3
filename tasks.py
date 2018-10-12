@@ -12,6 +12,7 @@ celery.conf.update(app.config)
 
 @celery.task
 def readFile():
+#loopa genom fler filer
     tweets = open('0c7526e6-ce8c-4e59-884c-5a15bbca5eb3','r')
     tweets = tweets.read()
     tweets = tweets.split('\n\n')
@@ -22,7 +23,9 @@ def readFile():
         tweet_list.append(tweet_text)
     return tweet_list
 
+@celery.task
 def countPronoun():
+#retweets
     tweets = readFile()
     dic = {"han":0,
 	   "hon":0,
@@ -52,7 +55,11 @@ def countPronoun():
 
 @app.route('/countpronouns', methods=['GET'])
 def main():
-    return countPronoun()
+    pronoun = countPronoun.delay()
+    while pronoun.ready() == False:
+         if pronoun.ready() == True:
+            return("anna")
+    return("hej")
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0',debug=True)
