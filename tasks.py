@@ -5,8 +5,12 @@ import json
 
 @app.task
 def readFile():
+<<<<<<< HEAD
 #loopa genom fler filer
     tweets = open('cloudC3/0c7526e6-ce8c-4e59-884c-5a15bbca5eb3','r')
+=======
+    tweets = open('0c7526e6-ce8c-4e59-884c-5a15bbca5eb3','r')
+>>>>>>> parent of d86db36... fix
     tweets = tweets.read()
     tweets = tweets.split('\n\n')
     tweet_list = []
@@ -16,13 +20,15 @@ def readFile():
         tweet_list.append(tweet_text)
     return tweet_list
 
+<<<<<<< HEAD
 @app.task
 def add(x,y):
     return x + y
 
 @app.task
+=======
+>>>>>>> parent of d86db36... fix
 def countPronoun():
-#retweets
     tweets = readFile()
     dic = {"han":0,
 	   "hon":0,
@@ -46,5 +52,15 @@ def countPronoun():
            dic["denne"] += 1
 	if "denna" in i:
            dic["denna"] += 1
+<<<<<<< HEAD
     return dic
+=======
+    json_pronoun = json.dumps(dic)
+    return json_pronoun
+
+
+@app.route('/countpronouns', methods=['GET'])
+def main():
+    return countPronoun()
+>>>>>>> parent of d86db36... fix
 
