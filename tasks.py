@@ -1,18 +1,15 @@
-from flask import Flask
 from celery import Celery
 import os
 import json
 
-app = Flask(__name__)
-app.config['CELERY_BROKER_URL'] ='pyamqp://'
-app.config['CELERY_RESULT_BACKEND'] ='rpc://'
+celery = Celery('Annas light-weight Flask server w/ Celery', broker='pyamqp://', backend= 'rpc://')
 
-celery = Celery(app.name, broker=app.config['CELERY_BROKER_URL'])
-celery.conf.update(app.config)
-
-@celery.task
 def readFile():
 #loopa genom fler filer
+    #root = 'pathToRootDir' #Rot-mappen alla separata filer ligger i :)
+    #for file in getFiles()
+        #tweets = open(root + file, 'r')
+        #Fo what you want with each separate file :D
     tweets = open('0c7526e6-ce8c-4e59-884c-5a15bbca5eb3','r')
     tweets = tweets.read()
     tweets = tweets.split('\n\n')
@@ -22,6 +19,11 @@ def readFile():
         tweet_text=single_tweet["text"]
         tweet_list.append(tweet_text)
     return tweet_list
+
+#def getFiles():
+    #for root, dirs, files in os.walk(root):
+        #for file in files:
+            #yield file
 
 @celery.task
 def countPronoun():
@@ -49,17 +51,9 @@ def countPronoun():
            dic["denne"] += 1
 	if "denna" in i:
            dic["denna"] += 1
-    json_pronoun = json.dumps(dic)
-    return json_pronoun
 
+    return dic
 
-@app.route('/countpronouns', methods=['GET'])
-def main():
-    pronoun = countPronoun.delay()
-    while pronoun.ready() == False:
-         if pronoun.ready() == True:
-            return("anna")
-    return("hej")
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0',debug=True)
+    celery.start()
