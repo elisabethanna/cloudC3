@@ -1,19 +1,12 @@
-from flask import Flask
-from celery import Celery
+from __future__ import absolute_import, unicode_literals
+from .celery import app
 import os
 import json
 
-app = Flask(__name__)
-app.config['CELERY_BROKER_URL'] ='pyamqp://'
-app.config['CELERY_RESULT_BACKEND'] ='rpc://'
-
-celery = Celery(app.name, broker=app.config['CELERY_BROKER_URL'])
-celery.conf.update(app.config)
-
-@celery.task
+@app.task
 def readFile():
 #loopa genom fler filer
-    tweets = open('0c7526e6-ce8c-4e59-884c-5a15bbca5eb3','r')
+    tweets = open('cloudC3/0c7526e6-ce8c-4e59-884c-5a15bbca5eb3','r')
     tweets = tweets.read()
     tweets = tweets.split('\n\n')
     tweet_list = []
@@ -23,7 +16,11 @@ def readFile():
         tweet_list.append(tweet_text)
     return tweet_list
 
-@celery.task
+@app.task
+def add(x,y):
+    return x + y
+
+@app.task
 def countPronoun():
 #retweets
     tweets = readFile()
@@ -49,17 +46,5 @@ def countPronoun():
            dic["denne"] += 1
 	if "denna" in i:
            dic["denna"] += 1
-    json_pronoun = json.dumps(dic)
-    return json_pronoun
+    return dic
 
-
-@app.route('/countpronouns', methods=['GET'])
-def main():
-    pronoun = countPronoun.delay()
-    while pronoun.ready() == False:
-         if pronoun.ready() == True:
-            return("anna")
-    return("hej")
-
-if __name__ == '__main__':
-    app.run(host='0.0.0.0',debug=True)
