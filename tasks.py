@@ -34,20 +34,21 @@ def countPronoun():
            "denna": 0,
            "denne": 0}
     for tweet in tweets:
-        if "han" in tweet.split():
-            dic["han"] += 1
-        if "hon" in tweet.split():
-            dic["hon"] += 1
-        if "hen" in tweet.split():
-            dic["hen"] += 1
-        if "den" in tweet.split():
-            dic["den"] += 1
-        if "det" in tweet.split():
-            dic["det"] += 1
-        if "denne" in tweet.split():
-            dic["denne"] += 1
-        if "denna" in tweet.split():
-            dic["denna"] += 1
+        for word in tweet.split():
+            if "han" == word:
+                dic["han"] += 1
+            if "hon" == word:
+                dic["hon"] += 1
+            if "hen" == word:
+                dic["hen"] += 1
+            if "den" == word:
+                dic["den"] += 1
+            if "det" == word:
+                dic["det"] += 1
+            if "denne" == word:
+                dic["denne"] += 1
+            if "denna" == word:
+                dic["denna"] += 1
     print(dic)
     return dic
 
