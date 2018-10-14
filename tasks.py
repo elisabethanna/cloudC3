@@ -1,4 +1,5 @@
 from celery import Celery
+import re
 import os
 import json
 
@@ -35,6 +36,7 @@ def countPronoun():
            "denne": 0}
     for tweet in tweets:
         for word in tweet.split():
+	    word = re.sub(r"[^A-Za-z]+", " ", word)
             if "han" == word:
                 dic["han"] += 1
             if "hon" == word:
