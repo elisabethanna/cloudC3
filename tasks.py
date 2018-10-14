@@ -35,22 +35,23 @@ def countPronoun():
            "denna": 0,
            "denne": 0}
     for tweet in tweets:
-        for word in tweet.split():
-	    word = re.sub(r"[^A-Za-z]+", " ", word)
-            if "han" == word:
-                dic["han"] += 1
-            if "hon" == word:
-                dic["hon"] += 1
-            if "hen" == word:
-                dic["hen"] += 1
-            if "den" == word:
-                dic["den"] += 1
-            if "det" == word:
-                dic["det"] += 1
-            if "denne" == word:
-                dic["denne"] += 1
-            if "denna" == word:
-                dic["denna"] += 1
+	if tweet[0:2] != "RT":
+             for word in tweet.split():
+	         word = re.sub(r"[^A-Za-z]+", " ", word)
+                 if "han" == word:
+                     dic["han"] += 1
+                 if "hon" == word:
+                     dic["hon"] += 1
+                 if "hen" == word:
+                     dic["hen"] += 1
+                 if "den" == word:
+                     dic["den"] += 1
+                 if "det" == word:
+                     dic["det"] += 1
+                 if "denne" == word:
+                     dic["denne"] += 1
+                 if "denna" == word:
+                     dic["denna"] += 1
     print(dic)
     return dic
 
